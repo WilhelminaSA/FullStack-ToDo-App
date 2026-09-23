@@ -350,7 +350,6 @@ ToDo_Flask_Backend/
     ├── public/
     ├── src/
     │   ├── api/
-    │   ├── components/
     │   ├── context/
     │   ├── pages/
     │   ├── styles/
