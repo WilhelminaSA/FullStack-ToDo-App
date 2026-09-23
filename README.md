@@ -544,28 +544,6 @@ Additional project documentation:
 
 ---
 
-## Screenshots
-
-Screenshots of the application will be added here.
-
-### User Login
-
-*Add screenshot here.*
-
-### User Dashboard
-
-*Add screenshot here.*
-
-### Admin Login
-
-*Add screenshot here.*
-
-### Admin Dashboard
-
-*Add screenshot here.*
-
----
-
 ## Future Improvements
 
 Possible future improvements include:
