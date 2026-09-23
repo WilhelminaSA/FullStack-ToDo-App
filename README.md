@@ -1,163 +1,320 @@
 # Full-Stack To-Do Application
 
-A full-stack task management application built with **React** and **Flask**, featuring JWT authentication, role-based access control, task management, and an admin dashboard.
+A full-stack To-Do application built with **React** and **Flask**, featuring JWT authentication, role-based access control, task management, and a dedicated admin dashboard.
 
-The application has two user roles:
-
-* **Regular User** - Manage their own tasks
-* **Admin** - Manage users and view/manage all tasks
+The project demonstrates how a React frontend communicates with a Flask REST API backed by a relational database.
 
 ---
 
 ## Project Overview
 
-This project demonstrates a complete full-stack application with:
+This application provides two types of users:
 
-* React frontend
-* Flask REST API backend
-* SQLAlchemy ORM
-* SQLite database for local development
-* JWT-based authentication
-* Role-based authorization
-* User and task management
-* Admin dashboard
-* Protected frontend routes
-* API integration between React and Flask
-* Automated backend and frontend tests
+* **Normal users** can manage their own tasks.
+* **Administrators** can manage users and view/manage tasks across the application.
+
+The application follows a client-server architecture:
+
+```text
+React Frontend
+      │
+      │ HTTP / JSON + JWT
+      ▼
+Flask REST API
+      │
+      │ SQLAlchemy
+      ▼
+Relational Database
+```
+
+The frontend handles the user interface and client-side state, while the backend is responsible for authentication, authorization, validation, business logic, and database operations.
 
 ---
 
-## Key Features
+# Key Features
 
-### User Features
+## User Features
 
 * User registration
-* User login
-* JWT authentication
+* User login and logout
+* JWT-based authentication
+* Persistent login using browser storage
+* Protected user dashboard
+* Role-aware frontend routing
+
+## Task Management
+
+Authenticated users can:
+
 * Create tasks
-* View personal tasks
+* View their own tasks
 * Update tasks
 * Delete tasks
 * Mark tasks as completed/uncompleted
-* Filter tasks by completion status
-* Filter tasks by priority
-* Set task priority
-* Set task due dates
-* Persistent authentication after page refresh
+* Add task descriptions
+* Set task priorities
+* Set due dates
 
-### Admin Features
+### Task Priorities
 
-* Dedicated admin login
-* JWT-based admin authentication
-* Role-based authorization
-* View all registered users
-* Search users
-* Update usernames and email addresses
-* Change user roles
-* Activate/deactivate user accounts
-* Delete users
-* View all tasks
-* Search and filter tasks
-* Delete tasks
-* Admin statistics dashboard
+Tasks support three priority levels:
+
+* Low
+* Medium
+* High
+
+The default priority is **Medium**.
+
+### Due Dates
+
+Tasks can optionally have a due date using the:
+
+```text
+YYYY-MM-DD
+```
+
+format.
+
+## Task Filtering
+
+Users can filter their tasks by:
+
+* Completion status
+* Priority
+
+Filters can be combined to quickly find relevant tasks.
+
+## User Dashboard
+
+The dashboard provides:
+
+* Task list
+* Task statistics
+* Task creation and editing
+* Task completion controls
+* Filters
+* Loading states
+* Error states
+* Empty states
 
 ---
 
-## Technology Stack
+# Admin Features
 
-### Frontend
+Administrators use a separate admin interface.
 
-* React
-* JavaScript
-* Vite
-* React Router
-* CSS
-* Vitest
-* React Testing Library
+Administrators are represented using the same `User` model as normal users, with elevated permissions through:
 
-### Backend
+```text
+role = admin
+```
 
-* Python
-* Flask
-* Flask-SQLAlchemy
-* SQLAlchemy
-* PyJWT
-* Werkzeug
-* Flask-CORS
+## Admin Authentication
 
-### Database
+Administrators have a dedicated login endpoint and login page.
+
+Admin authentication verifies:
+
+* User credentials
+* Account status
+* Admin role
+
+## Admin Dashboard
+
+The admin dashboard provides an overview of:
+
+* Total users
+* Active users
+* Number of administrators
+* Total tasks
+* Completed tasks
+
+## User Management
+
+Administrators can:
+
+* View users
+* Search users
+* Update usernames
+* Update email addresses
+* Change user roles
+* Activate/deactivate accounts
+* Delete users
+
+An administrator cannot delete their own currently authenticated account.
+
+## Task Management
+
+Administrators can:
+
+* View tasks across the application
+* See task ownership
+* Search/filter tasks through the admin interface
+* Delete tasks when required
+
+Unlike normal users, administrators are not restricted to their own tasks.
+
+---
+
+# Authentication & Authorization
+
+## JWT Authentication
+
+The application uses JSON Web Tokens for authentication.
+
+After successful login, the backend generates a JWT token.
+
+The frontend sends the token with protected requests using:
+
+```text
+Authorization: Bearer <token>
+```
+
+Protected backend endpoints validate the token before processing the request.
+
+## Role-Based Access Control
+
+The application supports two roles:
+
+```text
+user
+admin
+```
+
+### User
+
+A normal user can:
+
+* Manage their own tasks
+* Access the user dashboard
+* Use user-level APIs
+
+### Admin
+
+An administrator can:
+
+* Access the admin dashboard
+* Manage users
+* Manage application-wide tasks
+* Perform administrative operations
+
+Authorization is enforced by the **backend**, not just by the React frontend.
+
+## Task Ownership
+
+Every task contains a `user_id` identifying its owner.
+
+For normal users, the backend verifies that the requested task belongs to the authenticated user before allowing operations such as:
+
+* View
+* Update
+* Delete
+
+This prevents users from accessing another user's tasks by simply changing a task ID in an API request.
+
+---
+
+# Security
+
+The application includes several security measures:
+
+* Password hashing
+* JWT authentication
+* Protected API routes
+* Role-based authorization
+* Task ownership checks
+* Disabled-account checks
+* Backend-side input validation
+* Admin authorization
+* Admin self-deletion protection
+* Environment-based secret configuration
+* `.env` excluded from Git
+* Database files excluded from Git
+
+Passwords are never stored as plain text.
+
+The application stores password hashes and verifies passwords against those hashes during authentication.
+
+---
+
+# Tech Stack
+
+## Frontend
+
+| Technology            | Purpose                   |
+| --------------------- | ------------------------- |
+| React                 | User interface            |
+| React Router          | Client-side routing       |
+| React Context         | Authentication state      |
+| JavaScript            | Frontend development      |
+| Vite                  | Development/build tooling |
+| CSS                   | Styling                   |
+| Vitest                | Frontend testing          |
+| React Testing Library | UI testing                |
+
+## Backend
+
+| Technology       | Purpose                    |
+| ---------------- | -------------------------- |
+| Python           | Backend development        |
+| Flask            | REST API                   |
+| Flask-SQLAlchemy | Database ORM               |
+| SQLAlchemy       | Database interaction       |
+| PyJWT            | JWT authentication         |
+| Werkzeug         | Password hashing           |
+| Flask-CORS       | Cross-origin communication |
+| python-dotenv    | Environment configuration  |
+| Pytest           | Backend testing            |
+
+## Database
 
 * SQLite for local development
 * SQLAlchemy ORM
-
-### Testing
-
-* Pytest for backend
-* Vitest + React Testing Library for frontend
+* PostgreSQL-compatible database configuration through `DATABASE_URL`
 
 ---
 
-## Architecture
-
-The application follows a frontend-backend architecture:
+# System Architecture
 
 ```text
-                    React Frontend
-                         |
-                         | HTTP / REST API
-                         |
-                         v
-                  Flask Backend
-                         |
-              +----------+----------+
-              |                     |
-        JWT Authentication      RBAC
-              |                     |
-              +----------+----------+
-                         |
-                    SQLAlchemy
-                         |
-                         v
-                    SQLite DB
+┌──────────────────────────────────────┐
+│           React Frontend             │
+│                                      │
+│  Login / Signup                      │
+│  User Dashboard                      │
+│  Admin Login                         │
+│  Admin Dashboard                     │
+│  Task Management                     │
+│  User Management                     │
+└──────────────────┬───────────────────┘
+                   │
+                   │ HTTP / JSON
+                   │ JWT
+                   ▼
+┌──────────────────────────────────────┐
+│            Flask Backend             │
+│                                      │
+│  Authentication                      │
+│  Authorization / RBAC                │
+│  Task APIs                           │
+│  Admin APIs                          │
+│  Validation                          │
+│  Business Logic                      │
+└──────────────────┬───────────────────┘
+                   │
+                   │ SQLAlchemy
+                   ▼
+┌──────────────────────────────────────┐
+│             Database                 │
+│                                      │
+│  Users                               │
+│  Tasks                               │
+└──────────────────────────────────────┘
 ```
-
-### Request Flow
-
-```text
-User
-  |
-  v
-React UI
-  |
-  v
-API Layer
-  |
-  | JWT Bearer Token
-  v
-Flask REST API
-  |
-  +--> Authentication / Authorization
-  |
-  +--> Task Operations
-  |
-  +--> Admin Operations
-  |
-  v
-SQLAlchemy
-  |
-  v
-Database
-```
-
-For a detailed explanation of the architecture, see:
-
-* [Architecture Documentation](ARCHITECTURE.md)
-* [API Documentation](API_DOCUMENTATION.md)
-* [Feature List](features.md)
 
 ---
 
-## Project Structure
+# Project Structure
 
 ```text
 ToDo_Flask_Backend/
@@ -167,6 +324,11 @@ ToDo_Flask_Backend/
 ├── admin.py
 ├── requirements.txt
 ├── .gitignore
+├── .env
+│
+├── API_DOCUMENTATION.md
+├── ARCHITECTURE.md
+├── README.md
 │
 ├── routes/
 │   ├── __init__.py
@@ -183,242 +345,383 @@ ToDo_Flask_Backend/
 │   ├── test_tasks.py
 │   └── test_admin.py
 │
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── api/
-│   │   ├── context/
-│   │   ├── pages/
-│   │   ├── styles/
-│   │   └── tests/
-│   ├── package.json
-│   ├── package-lock.json
-│   └── vite.config.js
-│
-├── API_DOCUMENTATION.md
-├── ARCHITECTURE.md
-├── README.md
-└── features.md
+└── frontend/
+    │
+    ├── public/
+    ├── src/
+    │   ├── api/
+    │   ├── components/
+    │   ├── context/
+    │   ├── pages/
+    │   ├── styles/
+    │   └── tests/
+    │
+    ├── package.json
+    ├── package-lock.json
+    ├── vite.config.js
+    └── index.html
 ```
 
 ---
 
-## Authentication
+# Database Design
 
-The application uses **JWT (JSON Web Tokens)** for authentication.
-
-### User Authentication
-
-Users can:
-
-1. Register using `/signup`
-2. Log in using `/login`
-3. Receive an authentication token
-4. Use the token when accessing protected task endpoints
-
-Authenticated requests use:
-
-```text
-Authorization: Bearer <token>
-```
-
-### Admin Authentication
-
-Admins use a dedicated endpoint:
-
-```text
-POST /admin/login
-```
-
-The backend verifies:
-
-* Email
-* Password
-* Account status
-* User role
-
-Only users with the `admin` role can access admin-protected endpoints.
-
----
-
-## Role-Based Access Control
-
-The application uses two roles:
-
-```text
-user
-admin
-```
-
-Administrators are modeled as normal users with an elevated role rather than using a separate administrator table.
-
-This allows authentication to remain consistent while authorization determines which resources and operations each user can access.
-
-### User Permissions
-
-Regular users can:
-
-* Manage their own tasks
-* View only their own tasks
-* Update their own tasks
-* Delete their own tasks
-
-### Admin Permissions
-
-Admins can:
-
-* Manage users
-* Change user roles
-* Activate/deactivate users
-* Delete users
-* View all tasks
-* Delete tasks belonging to any user
-
----
-
-## API Endpoints
-
-### General
-
-| Method | Endpoint | Description         |
-| ------ | -------- | ------------------- |
-| GET    | `/`      | API welcome message |
-
-### Authentication
-
-| Method | Endpoint  | Description         |
-| ------ | --------- | ------------------- |
-| POST   | `/signup` | Register a new user |
-| POST   | `/login`  | Authenticate a user |
-
-### User Tasks
-
-| Method | Endpoint      | Description              |
-| ------ | ------------- | ------------------------ |
-| POST   | `/tasks`      | Create a task            |
-| GET    | `/tasks`      | Get current user's tasks |
-| GET    | `/tasks/<id>` | Get a specific task      |
-| PUT    | `/tasks/<id>` | Update a task            |
-| DELETE | `/tasks/<id>` | Delete a task            |
-
-### Admin
-
-| Method | Endpoint            | Description           |
-| ------ | ------------------- | --------------------- |
-| POST   | `/admin/login`      | Authenticate an admin |
-| GET    | `/admin/users`      | Get all users         |
-| PUT    | `/admin/users/<id>` | Update a user         |
-| DELETE | `/admin/users/<id>` | Delete a user         |
-| GET    | `/admin/tasks`      | Get all tasks         |
-
-For request bodies, authentication requirements, validation rules, and response formats, see [API_DOCUMENTATION.md](API_DOCUMENTATION.md).
-
----
-
-## Database Design
-
-The application uses two primary tables:
-
-### User
+The application uses two primary models:
 
 ```text
 User
-├── id
-├── username
-├── email
-├── password_hash
-├── role
-├── is_active
-└── created_at
-```
-
-### Task
-
-```text
+  │
+  │ 1
+  │
+  │
+  │ *
 Task
-├── id
-├── user_id
-├── title
-├── description
-├── priority
-├── completed
-├── due_date
-└── created_at
 ```
 
-Relationship:
+## User
+
+The `User` model contains:
 
 ```text
-User 1 ──────────── * Task
+id
+username
+email
+password_hash
+role
+is_active
+created_at
 ```
+
+## Task
+
+The `Task` model contains:
+
+```text
+id
+user_id
+title
+description
+priority
+completed
+due_date
+created_at
+```
+
+## Relationship
 
 One user can have multiple tasks.
 
-Each task belongs to exactly one user through the `user_id` foreign key.
+The task stores the user's ID through:
+
+```text
+Task.user_id
+```
+
+This foreign-key relationship is also used for task ownership and authorization.
 
 ---
 
-## Task Fields
+# API Overview
 
-Each task supports:
+## Authentication
 
-* **Title**
-* **Description**
-* **Priority**
+```text
+POST /signup
+POST /login
+POST /admin/login
+```
 
-  * Low
-  * Medium
-  * High
-* **Completed status**
-* **Due date**
-* **Creation timestamp**
+## User Task APIs
+
+```text
+POST /tasks
+GET /tasks
+GET /tasks/<id>
+PUT /tasks/<id>
+DELETE /tasks/<id>
+```
+
+## Admin User APIs
+
+```text
+GET /admin/users
+PUT /admin/users/<id>
+DELETE /admin/users/<id>
+```
+
+## Admin Task APIs
+
+```text
+GET /admin/tasks
+```
+
+For complete request bodies, responses, authentication requirements, validation rules, and error responses, see:
+
+**[API Documentation](API_DOCUMENTATION.md)**
 
 ---
 
-## Running the Backend
+# Frontend Architecture
 
-### 1. Clone the repository
+The React frontend is organized into separate responsibilities.
+
+## Pages
+
+The application contains dedicated pages for:
+
+* User login
+* User signup
+* User dashboard
+* Admin login
+* Admin dashboard
+
+## Authentication Context
+
+`AuthContext` manages authentication-related state such as:
+
+```text
+token
+user
+isAuthenticated
+isAdmin
+```
+
+It also provides:
+
+```text
+login()
+adminLogin()
+logout()
+```
+
+This allows authentication state to be shared across the application.
+
+## API Layer
+
+The frontend uses a centralized API layer for communication with Flask.
+
+It handles:
+
+* HTTP requests
+* JSON request bodies
+* JWT Authorization headers
+* API responses
+* API errors
+
+---
+
+# Routing
+
+The application uses React Router.
+
+## User Routes
+
+```text
+/login
+/signup
+/dashboard
+```
+
+Unauthenticated users attempting to access `/dashboard` are redirected to `/login`.
+
+## Admin Routes
+
+```text
+/admin/login
+/admin/dashboard
+```
+
+Unauthenticated users attempting to access `/admin/dashboard` are redirected to `/admin/login`.
+
+Role-based frontend routing also prevents normal users from accessing the admin dashboard.
+
+The backend independently enforces authorization, so frontend routing is not treated as a security boundary.
+
+---
+
+# Testing
+
+The project contains automated tests for both backend and frontend.
+
+## Backend Testing
+
+The Flask backend uses **Pytest**.
+
+Tests cover areas including:
+
+* User registration
+* User login
+* Authentication errors
+* Disabled accounts
+* JWT authentication
+* Token expiration
+* Task CRUD
+* Task ownership
+* Task filtering
+* Admin login
+* Admin authorization
+* User management
+* Role management
+* Admin task management
+
+Stable project checkpoint:
+
+```text
+55 backend tests passed
+```
+
+## Frontend Testing
+
+The React frontend uses:
+
+* Vitest
+* React Testing Library
+* Jest DOM
+* jsdom
+
+Tests cover:
+
+* API functions
+* Authentication context
+* Authentication persistence
+* Protected routes
+* Admin routes
+* Role-based redirects
+
+Stable project checkpoint:
+
+```text
+13 frontend tests passed
+```
+
+---
+
+# Input Validation
+
+The backend validates incoming data before modifying the database.
+
+Validation includes:
+
+* Username
+* Email
+* Password
+* Task title
+* Task description
+* Priority
+* Completion status
+* Due date
+* User role
+* Account status
+
+The backend also prevents duplicate usernames and email addresses.
+
+---
+
+# HTTP Status Codes
+
+The API uses standard HTTP status codes to communicate request results.
+
+Examples:
+
+```text
+200 OK
+201 Created
+400 Bad Request
+401 Unauthorized
+403 Forbidden
+404 Not Found
+409 Conflict
+```
+
+The React frontend uses API responses to display appropriate success and error states.
+
+---
+
+# Environment Configuration
+
+Sensitive configuration is stored using environment variables.
+
+Example:
+
+```text
+SECRET_KEY=your_secret_key
+DATABASE_URL=your_database_url
+```
+
+For local development, the application can use SQLite.
+
+The `.env` file is excluded from Git through `.gitignore`.
+
+---
+
+# CORS
+
+The Flask backend is configured to allow communication from the React development server.
+
+Development frontend:
+
+```text
+http://localhost:5173
+```
+
+This allows the React frontend and Flask API to run independently during development.
+
+---
+
+# Setup
+
+## Prerequisites
+
+Install:
+
+* Python 3.11+
+* Node.js
+* npm
+* Git
+
+---
+
+# Backend Setup
+
+Clone the repository:
 
 ```bash
 git clone https://github.com/WilhelminaSA/ToDo_Flask_Backend.git
+```
+
+Navigate to the project:
+
+```bash
 cd ToDo_Flask_Backend
 ```
 
-### 2. Create a virtual environment
+Create a virtual environment:
 
-Windows:
-
-```powershell
+```bash
 python -m venv .venv
 ```
 
-Activate it:
+Activate it on Windows:
 
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-### 3. Install dependencies
+Install dependencies:
 
-```powershell
+```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure environment variables
-
-Create a `.env` file in the project root:
+Create a `.env` file:
 
 ```env
-SECRET_KEY=your_secret_key_here
+SECRET_KEY=your_secret_key
 ```
 
-Do not commit the `.env` file to GitHub.
+Run the Flask backend:
 
-The repository already includes `.gitignore` rules to prevent environment files from being committed.
-
-### 5. Start Flask
-
-```powershell
+```bash
 python app.py
 ```
 
@@ -430,21 +733,21 @@ http://127.0.0.1:5000
 
 ---
 
-## Running the Frontend
+# Frontend Setup
 
-Open another terminal and navigate to the frontend:
+Open a second terminal.
 
-```powershell
+Navigate to the frontend:
+
+```bash
 cd frontend
 ```
 
-### 1. Install dependencies
+Install dependencies:
 
-```powershell
+```bash
 npm install
 ```
-
-### 2. Configure the API URL
 
 Create:
 
@@ -458,13 +761,13 @@ with:
 VITE_API_URL=http://127.0.0.1:5000
 ```
 
-### 3. Start the development server
+Start the React development server:
 
-```powershell
+```bash
 npm run dev
 ```
 
-The frontend runs on the Vite development server, normally:
+The frontend runs on:
 
 ```text
 http://localhost:5173
@@ -472,94 +775,111 @@ http://localhost:5173
 
 ---
 
-## Testing
+# Running Tests
 
-### Backend Tests
+## Backend
 
 From the project root:
 
-```powershell
+```bash
 pytest
 ```
 
-The backend test suite covers:
-
-* Authentication
-* User registration/login
-* Task CRUD
-* Task ownership
-* Input validation
-* Admin authentication
-* Admin authorization
-* User management
-* Admin task management
-
-### Frontend Tests
+## Frontend
 
 From the `frontend` directory:
 
-```powershell
+```bash
 npm test
 ```
 
-The frontend tests cover:
+---
 
-* API functions
-* Authentication context
-* Application routing
-* Protected user routes
-* Protected admin routes
+# Documentation
 
-The current project checkpoint has:
+Additional documentation is available in the repository:
 
-* **55 backend tests passing**
-* **13 frontend tests passing**
+### API Documentation
+
+[`API_DOCUMENTATION.md`](API_DOCUMENTATION.md)
+
+Detailed information about:
+
+* Endpoints
+* Request methods
+* Authentication
+* Request bodies
+* Responses
+* Error handling
+
+### Architecture Documentation
+
+[`ARCHITECTURE.md`](ARCHITECTURE.md)
+
+Detailed information about:
+
+* System architecture
+* Frontend architecture
+* Backend architecture
+* Authentication
+* Authorization
+* Database design
+* Request lifecycle
+* Design decisions
+* Testing architecture
 
 ---
 
-## Security
+# Future Improvements
 
-The application implements several security practices:
+Potential future improvements include:
 
-* Password hashing using Werkzeug
-* JWT authentication
-* Role-based authorization
-* Protected API endpoints
-* Task ownership checks
-* Admin-only endpoints
-* Active/inactive account checks
-* Environment-based secret key
-* CORS configuration
-* Sensitive `.env` files excluded from Git
+## Authentication
+
+* Email verification
+* Password reset
+* Refresh tokens
+* OAuth/social login
+* Multi-factor authentication
+
+## Task Management
+
+* Task categories
+* Tags
+* Recurring tasks
+* Subtasks
+* Task attachments
+* Reminders
+* Advanced search
+* Sorting
+* Pagination
+
+## Administration
+
+* Audit logs
+* Activity monitoring
+* Advanced analytics
+* Bulk user operations
+* Bulk task operations
+
+## Infrastructure
+
+* PostgreSQL production deployment
+* Database migrations with Alembic
+* Docker
+* CI/CD
+* Production logging
+* Rate limiting
+* Production deployment configuration
 
 ---
 
-## Documentation
+# Screenshots
 
-Additional project documentation:
-
-* [Feature List](features.md)
-* [API Documentation](API_DOCUMENTATION.md)
-* [Architecture Documentation](ARCHITECTURE.md)
+Screenshots will be added to the repository later.
 
 ---
 
-## Future Improvements
+# License
 
-Possible future improvements include:
-
-* Production deployment
-* PostgreSQL production database
-* Database migrations using Alembic/Flask-Migrate
-* Refresh token support
-* Password reset functionality
-* Pagination for large task/user lists
-* More comprehensive frontend component tests
-* CI/CD using GitHub Actions
-* Production environment configuration
-
----
-
-## License
-
-This project was built for educational and portfolio purposes.
+This project is intended as a portfolio and learning project.
