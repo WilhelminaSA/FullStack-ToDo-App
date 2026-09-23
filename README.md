@@ -317,48 +317,47 @@ The application stores password hashes and verifies passwords against those hash
 # Project Structure
 
 ```text
-ToDo_Flask_Backend/
-│
-├── app.py
-├── models.py
-├── admin.py
-├── requirements.txt
-├── .gitignore
-├── .env
-│
-├── API_DOCUMENTATION.md
-├── ARCHITECTURE.md
-├── README.md
-│
-├── routes/
-│   ├── __init__.py
-│   └── auth.py
-│
-├── utils/
-│   ├── __init__.py
-│   └── security.py
-│
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py
-│   ├── test_auth.py
-│   ├── test_tasks.py
-│   └── test_admin.py
-│
-└── frontend/
-    │
-    ├── public/
-    ├── src/
-    │   ├── api/
-    │   ├── context/
-    │   ├── pages/
-    │   ├── styles/
-    │   └── tests/
-    │
-    ├── package.json
-    ├── package-lock.json
-    ├── vite.config.js
-    └── index.html
+FullStack-ToDo-App/
+|
+|-- backend/
+|   |-- app.py
+|   |-- models.py
+|   |-- admin.py
+|   |-- requirements.txt
+|   |
+|   |-- routes/
+|   |   |-- __init__.py
+|   |   `-- auth.py
+|   |
+|   |-- utils/
+|   |   |-- __init__.py
+|   |   `-- security.py
+|   |
+|   `-- tests/
+|       |-- __init__.py
+|       |-- conftest.py
+|       |-- test_auth.py
+|       |-- test_tasks.py
+|       `-- test_admin.py
+|
+|-- frontend/
+|   |-- public/
+|   |-- src/
+|   |   |-- api/
+|   |   |-- context/
+|   |   |-- pages/
+|   |   |-- styles/
+|   |   `-- tests/
+|   |
+|   |-- package.json
+|   |-- package-lock.json
+|   |-- vite.config.js
+|   `-- index.html
+|
+|-- README.md
+|-- API_DOCUMENTATION.md
+|-- ARCHITECTURE.md
+`-- .gitignore
 ```
 
 ---
@@ -685,13 +684,13 @@ Install:
 Clone the repository:
 
 ```bash
-git clone https://github.com/WilhelminaSA/ToDo_Flask_Backend.git
+git clone https://github.com/WilhelminaSA/FullStack-ToDo-App.git
 ```
 
-Navigate to the project:
+Navigate to the backend:
 
 ```bash
-cd ToDo_Flask_Backend
+cd FullStack-ToDo-App/backend
 ```
 
 Create a virtual environment:
@@ -712,7 +711,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Create a `.env` file:
+Create a `.env` file inside the `backend` directory:
 
 ```env
 SECRET_KEY=your_secret_key
@@ -739,7 +738,7 @@ Open a second terminal.
 Navigate to the frontend:
 
 ```bash
-cd frontend
+cd FullStack-ToDo-App/frontend
 ```
 
 Install dependencies:
@@ -778,9 +777,10 @@ http://localhost:5173
 
 ## Backend
 
-From the project root:
+From the `backend` directory:
 
 ```bash
+cd backend
 pytest
 ```
 
@@ -789,6 +789,7 @@ pytest
 From the `frontend` directory:
 
 ```bash
+cd frontend
 npm test
 ```
 
@@ -873,12 +874,8 @@ Potential future improvements include:
 
 ---
 
-# Screenshots
-
-Screenshots will be added to the repository later.
-
----
-
 # License
 
 This project is intended as a portfolio and learning project.
+````
+rsion above, save it and **do not commit yet**. Then we'll inspect the README diff and make sure only the intended documentation changes are staged.
