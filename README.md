@@ -878,4 +878,3 @@ Potential future improvements include:
 
 This project is intended as a portfolio and learning project.
 ````
-rsion above, save it and **do not commit yet**. Then we'll inspect the README diff and make sure only the intended documentation changes are staged.
